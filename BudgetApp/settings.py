@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from decouple import config
 SETTINGS_PATH = os.path.normpath(os.path.dirname(__file__))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -21,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2aa)(#b_6zvrkhvue^9@c=@w!cxk2okwcqi0a=xvj5mi0pjnc='
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -78,15 +79,11 @@ WSGI_APPLICATION = 'BudgetApp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'sql_server.pyodbc',
-        'NAME': 'BudgetApp',
-        'HOST': 'DESKTOP-VKC0RLB',
-        'USER': '',
-        'PASSWORD': '',
-
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
-        }
+        'ENGINE': config('ENGINE'),
+        'NAME': config('NAME'),
+        'HOST': config('HOST'),
+        'USER': config('USER'),
+        'PASSWORD': config('PASSWORD'),
     }
 }
 
