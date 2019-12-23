@@ -1,4 +1,4 @@
-from django.shortcuts import render , redirect , render_to_response
+from django.shortcuts import render , redirect
 import json
 from datetime import datetime
 from django.http import HttpResponse, JsonResponse
@@ -125,7 +125,7 @@ def total(request):
 
 @login_required
 def expense_form(request):
-    form = Expense_form(request.user)
+    form = Expense_form(request.user , request.POST)
     if request.is_ajax():
         category_name = request.POST.get('category_name')
         if request.POST.get('category_requrement') == 'True':
@@ -144,7 +144,7 @@ def expense_form(request):
         if form.is_valid():
             expense_temp_form = form.save(commit=False)
             expense_temp_form.user = request.user
-            expense_temp_form.save()
+            form.save()
             return redirect('account:expense_table')
         else:
             return HttpResponse("form was not valid")
@@ -153,7 +153,7 @@ def expense_form(request):
         return render(request,'accounts/income_expense_form.html',{'form':form , 'page':page})
 @login_required
 def income_form(request):
-    form = Income_form(request.user)
+    form = Income_form(request.user , request.POST)
     if request.is_ajax():
         category_name = request.POST.get('category_name')
         if request.POST.get('category_requrement') == 'True':
@@ -172,7 +172,7 @@ def income_form(request):
         if form.is_valid():
             income_temp_form = form.save(commit=False)
             income_temp_form.user = request.user
-            income_temp_form.save()
+            form.save()
             return redirect('account:income_table')
         else:
             return HttpResponse("form was not valid")
