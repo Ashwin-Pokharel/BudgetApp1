@@ -13,6 +13,7 @@ class Category(models.Model):
         ('I', 'Income'),
         ('E', 'Expense'),
     )
+    user = models.ForeignKey(User, on_delete= models.CASCADE , blank= False , null = True)
     name = models.CharField(max_length=50)
     required = models.BooleanField(default=True)
     type = models.CharField(max_length=1 , choices=MY_CHOICES , null=True)
@@ -22,6 +23,9 @@ class Category(models.Model):
 
     def natural_key(self):
         return self.name
+
+
+
 
 class Incomes(models.Model):
     name = models.CharField(max_length=100)

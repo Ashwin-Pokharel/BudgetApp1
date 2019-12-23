@@ -1,4 +1,6 @@
-from .models import User,Expense,Incomes,Category
+from .models import Expense,Incomes
+from django.contrib.auth.models import User
+from .models import Category as CategoryModel
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
@@ -14,7 +16,7 @@ class loginForm(forms.Form):
     password = forms.CharField(label='password', widget=forms.PasswordInput())
 
 
-class Expense_form(ModelForm):
+class Expense_form(forms.ModelForm):
     class Meta:
         model = Expense
         exclude = ('user',)
@@ -22,7 +24,14 @@ class Expense_form(ModelForm):
             'date': forms.DateInput(attrs={'type': 'date'})
         }
 
-class Income_form(ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super(Expense_form, self).__init__(*args, **kwargs)
+        systemUser = User.objects.get(username = 'system')
+        systemCategories = CategoryModel.object.filter(user = systemUser , type = 'E')
+        self.fields['category'].queryset = (CategoryModel.object.filter(user=user , type = 'E') | systemCategories)
+
+
+class Income_form(forms.ModelForm):
     class Meta:
         model = Incomes
         exclude = ('user',)
@@ -30,3 +39,15 @@ class Income_form(ModelForm):
             'date': forms.DateInput(attrs={'type': 'date'})
         }
 
+
+    def __init__(self, user, *args, **kwargs):
+        super(Income_form, self).__init__(*args, **kwargs)
+        systemUser = User.objects.get(username='system')
+        systemCategories = CategoryModel.object.filter(user=systemUser , type = 'I')
+        self.fields['category'].queryset = CategoryModel.object.filter(user=user , type = 'I') | systemCategories
+
+
+class Category_form(ModelForm):
+    class Meta:
+        model = CategoryModel
+        exclude = ('user',)

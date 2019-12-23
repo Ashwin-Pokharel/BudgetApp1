@@ -2,11 +2,13 @@ from django.shortcuts import render , redirect , render_to_response
 import json
 from datetime import datetime
 from django.http import HttpResponse, JsonResponse
-from .forms import loginForm , SignInForm , Expense_form, Income_form
+from .forms import loginForm , SignInForm , Expense_form, Income_form , Category_form
 from django.contrib.auth import authenticate , login , logout
 from .models import User , Expense , Incomes
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
+from .models import Category
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def home(request):
@@ -17,12 +19,9 @@ def register(request):
     if request.method == "POST":
         if form.is_valid():
             form.save()
-            print("user is saved")
-            username = form.cleaned_data.get('username')
-            name = form.cleaned_data.get('first_name')
             return redirect("account:home")
     else:
-        return render(request, 'accounts/login_page.html', {'form': form})
+        return render(request, 'accounts/login.html', {'form': form})
 
 def login_view(request):
     form =  loginForm(request.POST)
@@ -35,11 +34,14 @@ def login_view(request):
                 login(request, usera)
                 return redirect('account:total')
             else:
-                return HttpResponse("the user did not exist")
+                success = 'false'
+                return render(request , 'accounts/login.html' , {'form':form , 'success':success})
         else:
             return HttpResponse("the form is not valid ")
     else:
-        return render(request,'accounts/login_page.html', {'form': form})
+        success = 'true'
+        return render(request, 'accounts/login.html', {'form': form, 'success': success})
+
 
 
 def logout_view(request):
@@ -50,13 +52,14 @@ def logout_view(request):
         return HttpResponse("user doesnt exist to logout")
     return render(request , "accounts/home.html")
 
-
+@login_required
 def welcome(request):
     if request.user.is_authenticated:
         return total(request)
     else:
         return redirect('account:login')
 
+@login_required
 def total(request):
     if request.is_ajax():
         form_value = request.POST.get('month')
@@ -120,34 +123,66 @@ def total(request):
 
 
 
-
+@login_required
 def expense_form(request):
-    form = Expense_form(request.POST)
-    if request.method == 'POST':
+    form = Expense_form(request.user)
+    if request.is_ajax():
+        category_name = request.POST.get('category_name')
+        if request.POST.get('category_requrement') == 'True':
+            category_requrement = 1
+        else:
+            category_requrement = 0
+        if request.POST.get('category_type') == 'Income':
+            category_type = 'I'
+        else:
+            category_type = 'E'
+        obj  = Category(user = request.user  , name = category_name , required = category_requrement , type = category_type )
+        obj.save()
+        success = {'success': 'success'}
+        return JsonResponse(success)
+    elif request.method == 'POST':
         if form.is_valid():
             expense_temp_form = form.save(commit=False)
             expense_temp_form.user = request.user
-            form.save()
+            expense_temp_form.save()
             return redirect('account:expense_table')
         else:
             return HttpResponse("form was not valid")
     else:
-        return render(request,'accounts/login_page.html',{'form':form})
-
+        page = 'expense'
+        return render(request,'accounts/income_expense_form.html',{'form':form , 'page':page})
+@login_required
 def income_form(request):
-    form = Income_form(request.POST)
-    if request.method == 'POST':
+    form = Income_form(request.user)
+    if request.is_ajax():
+        category_name = request.POST.get('category_name')
+        if request.POST.get('category_requrement') == 'True':
+            category_requrement = 1
+        else:
+            category_requrement = 0
+        if request.POST.get('category_type') == 'Income':
+            category_type = 'I'
+        else:
+            category_type = 'E'
+        obj = Category(name = category_name , required = category_requrement , type = category_type , user = request.user)
+        obj.save()
+        success = {'success': 'success'}
+        return JsonResponse(success)
+    elif request.method == 'POST':
         if form.is_valid():
             income_temp_form = form.save(commit=False)
             income_temp_form.user = request.user
-            form.save()
+            income_temp_form.save()
             return redirect('account:income_table')
         else:
             return HttpResponse("form was not valid")
     else:
-        return render(request , 'accounts/login_page.html',{'form':form})
+        page = 'income'
+        return render(request , 'accounts/income_expense_form.html',{'form':form , 'page':page})
 
 
+
+@login_required
 def expense_table(request):
         if request.method == 'GET':
             today = datetime.now()
@@ -170,6 +205,7 @@ def expense_table(request):
                 serialized_data = serializers.serialize('json',tables,indent=2,use_natural_foreign_keys=True, use_natural_primary_keys=True)
                 return HttpResponse(serialized_data,content_type='application/json')
 
+@login_required
 def income_table(request):
     if request.method == 'GET':
         today = datetime.now()

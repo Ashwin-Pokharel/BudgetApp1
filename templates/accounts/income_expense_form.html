@@ -1,0 +1,112 @@
+{% extends 'accounts/Content.html' %}
+{% load static %}
+{% block head %}
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans|Oswald:500&display=swap" rel="stylesheet">
+    <nav class = "navbar sticky-top" style="background-color: #303942 ; padding: 0px; opacity: 1 ; border-radius: 8px">
+            <a class="navbar-brand" href="#">
+                <span class="navbar-brand mb-0 h-100 p-0" style="color: #f9f9f9">Fore$ight</span>
+            </a>
+            <a class="nav-item nav-link active m-0 p-0" href="{% url 'account:total' %} " style="padding-left: 10px; color: #f9f9f9;font-family: 'Josefin Sans' , sans-serif">Total</a>
+            <a class="nav-item nav-link active " href="{% url 'account:expense_table' %}" style="padding-left: 10px; color: #f9f9f9;font-family: 'Josefin Sans' , sans-serif">Expenses</a>
+            <a class="nav-item nav-link active" href="{% url 'account:income_table' %}" style="padding-left: 10px; color: #f9f9f9;font-family: 'Josefin Sans' , sans-serif">Incomes</a>
+            <a class="nav-item nav-link active" href="#" style="padding-left: 10px; color: #f9f9f9;font-family: 'Josefin Sans' , sans-serif">Profile</a>
+            <a class="nav-item nav-link active" href="{% url 'account:logout' %}" style="padding-left: 10px; color: #f9f9f9;font-family: 'Josefin Sans' , sans-serif">Logout</a>
+    </nav>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container h-100">
+    <div class = "row justify-content-center align-items-center">
+        <img src="{% static "accounts/recent_logo.png"%}" style="width: 300px;height: 300px">
+        <div class = "col-md-11 h-75" >
+            <form method="post" class = empty-form>
+                {% csrf_token %}
+                {{  form.as_p }}
+                <button type="submit" class="btn btn-secondary">Submit</button>
+            </form>
+        </div>
+    </div>
+    <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">New Category</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="categoryForm">
+                <div class="form-group">
+                    <label for="formGroupName">Name of Category (Required)</label>
+                    <input type="text" class="form-control" id="Category_name" Name="Category_Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="typeSelect">Type (Required)</label>
+                    <select class="form-control" id="Category_type" Name="Category_type">
+                        <option>Income</option>
+                        <option>Expense</option>
+                    </select>
+                  </div>
+                   <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="Category_requirement" Name="Category_requirement">
+                  <label class="form-check-label" for="required">
+                     Necessary
+                  </label>
+                </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="new_category()">Save changes</button>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    <script>
+        $('#id_category').change(function () {
+            console.log("came to the function")
+            if($('#id_category option:selected').text() == 'Other'){
+                console.log("came inside the if");
+                $('#categoryModal').modal('show');
+            }
+        })
+        function new_category() {
+            var page_name = "{{ page }}"
+            var category_name = $('#Category_name').val();
+            var category_type = $('#Category_type option:selected').text();
+            var category_requrement; 
+            if($('#Category_requirement').is(':checked')){
+              category_requrement = 'True'
+            }
+            else{
+              category_requrement = 'False';
+            }
+            console.log(name);
+            $('#categoryModal').modal('hide');
+            $.ajax({
+              headers: { "X-CSRFToken": '{{csrf_token}}'},
+              type:"POST",
+              {% if page == 'expense'%} //doesnt really matter where it's being sent.
+                  url: 'expense_form',
+              {% else %}
+                  url: 'income_form',
+              {% endif %}
+              data:{
+                'category_name' : category_name,
+                'category_type' : category_type,
+                'category_requrement' : category_requrement
+              },
+              success : function(data){
+                  setTimeout(function(){// wait for 2 secs(2)
+                        location.reload(); // then reload the page.(3)
+                    }, 2000);
+              }
+            })
+        }
+
+    </script>
+{% endblock %}
