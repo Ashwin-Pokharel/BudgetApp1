@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['BudgetApp-dev.us-east-1.elasticbeanstalk.com','127.0.0.1',]
+ALLOWED_HOSTS = ['BudgetApp-dev.us-east-1.elasticbeanstalk.com','BudgetApp-final.us-east-1.elasticbeanstalk.com','127.0.0.1','localhost',]
 
 
 # Application definition
