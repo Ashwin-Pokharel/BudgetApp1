@@ -22,12 +22,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = os.environ['SECRET_KEY']
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['BudgetApp-dev.us-east-1.elasticbeanstalk.com','BudgetApp-final.us-east-1.elasticbeanstalk.com','127.0.0.1','localhost',]
+ALLOWED_HOSTS = ['budgetapp-dev2.us-east-1.elasticbeanstalk.com','BudgetApp-final.us-east-1.elasticbeanstalk.com','127.0.0.1','localhost',]
 
 
 # Application definition
@@ -91,11 +92,11 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': config('NAME'),
-            'HOST': config('HOST'),
-            'USER': config('USER'),
-            'PASSWORD': config('PASSWORD'),
-            'PORT': config('PORT')
+            'NAME': 'BudgetApp',
+            'HOST': 'localhost',
+            'USER': 'apokhar',
+            'PASSWORD': '',
+            'PORT': '2345'
         }
     }
 
