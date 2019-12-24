@@ -1,4 +1,15 @@
 config.yml
+
+.DS_Store
 venv/
+
+# VScode
+.VScode
+.vscode
+
+# idea
 .idea/
+
+# pycharm
+__pycache__
 
