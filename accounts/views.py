@@ -21,12 +21,13 @@ def register(request):
             form.save()
             return redirect("account:home")
         else:
-            return HttpResponse("Password was probably wrong")
+            return render(request, 'accounts/login.html', {'form': form})
     else:
         return render(request, 'accounts/login.html', {'form': form})
 
 def login_view(request):
     form =  loginForm(request.POST)
+    success = 'false'
     if request.method == "POST":
         if form.is_valid():
             username = form.cleaned_data.get('username')
@@ -39,7 +40,7 @@ def login_view(request):
                 success = 'false'
                 return render(request , 'accounts/login.html' , {'form':form , 'success':success})
         else:
-            return HttpResponse("the form is not valid ")
+            return render(request, 'accounts/login.html', {'form': form, 'success': success})
     else:
         success = 'true'
         return render(request, 'accounts/login.html', {'form': form, 'success': success})
