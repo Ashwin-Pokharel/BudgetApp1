@@ -9,9 +9,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 from .models import Category
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 # Create your views here.
 
 def home(request):
+    messages.warning(request, 'Your account expires in three days.')
     return render(request, 'accounts/home.html')
 
 def register(request):
