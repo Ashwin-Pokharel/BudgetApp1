@@ -20,6 +20,8 @@ def register(request):
         if form.is_valid():
             form.save()
             return redirect("account:home")
+        else:
+            return HttpResponse("Password was probably wrong")
     else:
         return render(request, 'accounts/login.html', {'form': form})
 
