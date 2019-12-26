@@ -26,7 +26,7 @@ class Expense_form(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(Expense_form, self).__init__(*args, **kwargs)
-        systemUser = User.objects.get(username = 'system')
+        systemUser = User.objects.get(username = 'system') #system user need's to be created.
         try:
             systemCategories = CategoryModel.object.filter(user = systemUser , type = 'E')
             self.fields['category'].queryset = (CategoryModel.object.filter(user=user , type = 'E') | systemCategories)

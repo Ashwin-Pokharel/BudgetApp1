@@ -27,7 +27,7 @@ SECRET_KEY = '2aa)(#b_6zvrkhvue^9@c=@w!cxk2okwcqi0a=xvj5mi0pjnc='
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['BudgetApp-dev2.us-east-1.elasticbeanstalk.com','BudgetApp-final.us-east-1.elasticbeanstalk.com','127.0.0.1','localhost','172.31.90.147']
 
