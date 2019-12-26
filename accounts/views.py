@@ -130,7 +130,8 @@ def total(request):
 
 @login_required
 def expense_form(request):
-    form = Expense_form(request.user , request.POST)
+    user = User.objects.get(username=request.user.username)
+    form = Expense_form(user, request.POST)
     if request.is_ajax():
         category_name = request.POST.get('category_name')
         if request.POST.get('category_requrement') == 'True':
@@ -158,7 +159,8 @@ def expense_form(request):
         return render(request,'accounts/income_expense_form.html',{'form':form , 'page':page})
 @login_required
 def income_form(request):
-    form = Income_form(request.user , request.POST)
+    user = User.objects.get(username=request.user.username)
+    form = Income_form(user , request.POST)
     if request.is_ajax():
         category_name = request.POST.get('category_name')
         if request.POST.get('category_requrement') == 'True':
