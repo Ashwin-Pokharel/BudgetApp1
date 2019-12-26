@@ -37,7 +37,6 @@ def login_view(request):
             usera = authenticate(request, username = username , password = password)
             if usera is not None:
                 login(request, usera)
-                request.session['user'] = usera
                 return redirect('account:total')
             else:
                 success = 'false'
@@ -131,8 +130,8 @@ def total(request):
 
 @login_required
 def expense_form(request):
-    #user = User.objects.get(username=request.user.username)
-    form = Expense_form(request.session['user'], request.POST)
+    user = User.objects.get(username=request.user.username)
+    form = Expense_form(request.user, request.POST)
     if request.is_ajax():
         category_name = request.POST.get('category_name')
         if request.POST.get('category_requrement') == 'True':
