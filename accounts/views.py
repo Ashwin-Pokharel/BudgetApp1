@@ -13,7 +13,7 @@ from django.contrib import messages
 # Create your views here.
 
 def home(request):
-    messages.warning(request, 'Site is in Development. There are multiple bugs and data may be deleted at anytime')
+    messages.warning(request, 'Site is still in development. There might be bugs and data may be deleted at anytime')
     return render(request, 'accounts/home.html')
 
 def register(request):
