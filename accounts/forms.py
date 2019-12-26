@@ -27,8 +27,14 @@ class Expense_form(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(Expense_form, self).__init__(*args, **kwargs)
         systemUser = User.objects.get(username = 'system')
-        systemCategories = CategoryModel.object.filter(user = systemUser , type = 'E')
-        self.fields['category'].queryset = (CategoryModel.object.filter(user=user , type = 'E') | systemCategories)
+        try:
+            systemCategories = CategoryModel.object.filter(user = systemUser , type = 'E')
+            self.fields['category'].queryset = (CategoryModel.object.filter(user=user , type = 'E') | systemCategories)
+        except:
+            systemCategories = CategoryModel.object.filter(user=systemUser, type='E')
+            self.fields['category'].queryset = systemCategories
+
+
 
 
 class Income_form(forms.ModelForm):
