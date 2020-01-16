@@ -47,9 +47,6 @@
             },
             dataType:'json',
             success: function (data){
-                console.log(data);
-                console.log(data['total']);
-                console.log(data['category_expense_table'])
                 data_set = []
                 for(item in data['category_expense_table']){
                     var temp_dict = {"label":item,"value":data['category_expense_table'][item]};
