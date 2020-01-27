@@ -27,7 +27,7 @@ SECRET_KEY = '2aa)(#b_6zvrkhvue^9@c=@w!cxk2okwcqi0a=xvj5mi0pjnc='
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['BudgetApp-dev2.us-east-1.elasticbeanstalk.com','BudgetApp-final.us-east-1.elasticbeanstalk.com','127.0.0.1','localhost','172.31.90.147']
 
@@ -43,6 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
+    'rest_framework',
+    'accountsRest',
+    'djoser',
+    'knox',
 ]
 
 MIDDLEWARE = [
@@ -120,6 +124,20 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+#rest framework
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+     'DEFAULT_AUTHENTICATION_CLASSES': (  # added
+         'knox.auth.TokenAuthentication',
+     ),
+     'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ]
+
+}
 
 
 # Internationalization
