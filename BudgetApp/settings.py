@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 #SECRET_KEY = os.environ['SECRET_KEY']
-SECRET_KEY = '2aa)(#b_6zvrkhvue^9@c=@w!cxk2okwcqi0a=xvj5mi0pjnc='
+SECRET_KEY = config('SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -93,9 +93,9 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'budgetapp',
-            'HOST': 'localhost',
-            'USER': 'apokhar',
+            'NAME': config('NAME'),
+            'HOST': config('HOST'),
+            'USER': config('USER'),
             'PASSWORD': '',
             'PORT': '2345'
         }
