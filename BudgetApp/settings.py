@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 from decouple import config
+from datetime import timedelta
+from rest_framework.settings import api_settings
+
 SETTINGS_PATH = os.path.normpath(os.path.dirname(__file__))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -45,8 +48,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'rest_framework',
     'accountsRest',
-    'djoser',
-    'knox',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -130,13 +132,27 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
      'DEFAULT_AUTHENTICATION_CLASSES': (  # added
-         'knox.auth.TokenAuthentication',
+         'rest_framework.authentication.TokenAuthentication',
      ),
      'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
-    ]
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 
+}
+
+
+#knox settings 
+REST_KNOX = {
+  'SECURE_HASH_ALGORITHM': 'cryptography.hazmat.primitives.hashes.SHA512',
+  'AUTH_TOKEN_CHARACTER_LENGTH': 64,
+  'TOKEN_TTL': timedelta(hours=10),
+  'USER_SERIALIZER': 'knox.serializers.UserSerializer',
+  'TOKEN_LIMIT_PER_USER': None,
+  'AUTO_REFRESH': False,
 }
 
 
